@@ -15,7 +15,7 @@ pub struct Function {
 
     /// See `zero_tolerance` in [`crate::plotfn::PlotFnParams`]
     ///
-    /// Specifically `zero_tolerance =  codomain_length / error_tolerance_factor`.
+    /// Specifically `zero_tolerance = domain_length / zero_tolerance_factor`.
     pub zero_tolerance_factor: f32,
 
     pub kind: FunctionKind

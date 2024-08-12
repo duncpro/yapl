@@ -216,20 +216,20 @@ impl BoundingRect {
     pub fn area(&self) -> f32 { self.x.len() * self.y.len() }
 }
 
-/// Transforms `coordinate` from an absolute position to a position relative to the interior of
+/// Transforms `coordinate` from an absolute position to a coordinate relative to the interior of
 /// `container`.
 ///
-/// For instance, if `container` is a square, the the lower left (minimum) corner will have
-/// a normalized coordinate of (0.0, 0.0) and the uppe right (maximum) corner will have a 
+/// For instance, if `container` is a square then the lower left (minimum) corner will have
+/// a normalized coordinate of (0.0, 0.0) and the upper right (maximum) corner will have a 
 /// a normalized coordinate of (1.0, 1.0).
 ///
-/// If the absolute coordinate is not coincident with `container` then the resultant relative
-/// coordinate's components will fall outside of the ranges...
+/// If the coordinate is not coincident with `container` then the resultant relative
+/// coordinate's components will fall outside the range...
 /// - `0 <= x <= container.x.len() / maximum_dimension`
 /// - `0 <= y <= container.y.len() / maximum_dimension`
 ///
-/// This procedure will panic if `container` is degenerated to a point (has an area of zero),
-/// because in this case `coordinate` has no position relative to`container`, it *is* `container`.
+/// This procedure will panic if `container` is degenerated to a point (has an area of zero)
+/// since in this case `coordinate` has no position relative to `container` it *is* `container`.
 pub fn normalize_coordinate(container: &BoundingRect, coordinate: &mut Vec2D) {
     assert_ne!(container.area(), 0.0, "container's interior is undefined and therefore so \
         is the interior coordinate system.");
