@@ -1,20 +1,26 @@
 // # SVG Code Generation
 
 use crate::elements::{Function, CoordinatePlane, FunctionKind};
-use crate::math::{BoundingRect, normalize_coordinate, Vec2D};
-use crate::plotfn::{PlotFnParams, self};
+use crate::math::{self, BoundingRect, Vec2D};
+use crate::plotfn::{self, PlotFnParams};
 use crate::misc::{SegVec, SegVecRoot};
+
+fn normalize_coordinate(extent: &BoundingRect, coordinate: &mut Vec2D) {
+    coordinate.y *= -1.0;
+    math::normalize_coordinate(extent, coordinate);
+}
 
 pub fn codegen_svg_cplane<W>(out: &mut W, cplane: &CoordinatePlane, gstyle: &impl SVGGlobalStyles<W>)
 -> std::io::Result<()>
 where W: std::io::Write
 { 
     if cplane.extent.area() == 0.0 { return Ok(()); }
+    let max_len = f32::max(cplane.extent.x.len(), cplane.extent.y.len());
+    let horizontal_len = cplane.extent.x.len() / max_len;
+    let vertical_len = cplane.extent.y.len() / max_len;
     
-    let mut bounds = Vec2D { x: cplane.extent.x.end(), y: cplane.extent.y.end() };
-    normalize_coordinate(&cplane.extent, &mut bounds);
     write!(out, "<svg")?;
-    write!(out, " viewBox=\"0 0 {} {}\"", bounds.x, bounds.y)?;
+    write!(out, " viewBox=\"0 0 {} {}\"", horizontal_len, vertical_len)?;
     write!(out, " xmlns=\"http://www.w3.org/2000/svg\"")?;
     write!(out, " preserveAspectRatio=\"xMinYMin meet\"")?;
     write!(out, ">")?;    
@@ -109,17 +115,17 @@ where W: std::io::Write
 
                 let x = match function.kind {
                     FunctionKind::OfX => anchor.input,
-                    FunctionKind::OfY => (function.eval)(anchor.input) * -1.0,
+                    FunctionKind::OfY => (function.eval)(anchor.input),
                 };
 
                 let y = match function.kind {
-                    FunctionKind::OfX => (function.eval)(anchor.input) * -1.0,
+                    FunctionKind::OfX => (function.eval)(anchor.input),
                     FunctionKind::OfY => anchor.input,
                 };
 
-                let mut svg_coord = Vec2D { x, y };
-                normalize_coordinate(extent, &mut svg_coord);
-                write!(out, " {} {} ", svg_coord.x, svg_coord.y)?;
+                let mut coord = Vec2D { x, y };
+                normalize_coordinate(extent, &mut coord);
+                write!(out, " {} {} ", coord.x, coord.y)?;
             },
         }
     }

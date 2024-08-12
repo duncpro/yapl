@@ -1,14 +1,12 @@
 use yapl3::codegen_svg::{codegen_svg_cplane, DefaultSVGGlobalStyles};
-use yapl3::elements::{CoordinatePlane, Function};
+use yapl3::elements::{CoordinatePlane, Function, FunctionKind};
 use yapl3::math::{ClosedInterval, NonDecreasing};
 
 fn main() -> std::io::Result<()> {
-    let mut cplane = CoordinatePlane::new_minimal();
-    cplane.extent.y = ClosedInterval::new(NonDecreasing::new(-1.1, 1.1));
-    cplane.extent.x = ClosedInterval::new(NonDecreasing::new(-5.0, 5.0));
+    let mut cplane = CoordinatePlane::new_elementary();
 
-    let mut f = Function::new_default(|x| (1.0 / x).sin());
-    f.zero_tolerance_factor = 10.0f32.powi(5);
+    let mut f = Function::new_default(|x| x.powi(2));
+    f.kind = FunctionKind::OfY;
     cplane.fns.push(f);
       
     let mut out = std::fs::OpenOptions::new()
