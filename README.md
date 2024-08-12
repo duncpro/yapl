@@ -1,7 +1,7 @@
 # yapl3
 Experimental SVG plotting library with focus on mathematical exposition.
 
-![sin(1/x)](readme-assets/sin(1overx).svg)
+![sin(1/x)](readme-assets/sin1overx.png)
 
 ```rust
 use yapl3::codegen_svg::{codegen_svg_cplane, DefaultSVGGlobalStyles};
