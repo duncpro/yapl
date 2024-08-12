@@ -5,11 +5,6 @@ use crate::math::{self, BoundingRect, Vec2D};
 use crate::plotfn::{self, PlotFnParams};
 use crate::misc::{SegVec, SegVecRoot};
 
-fn normalize_coordinate(extent: &BoundingRect, coordinate: &mut Vec2D) {
-    coordinate.y *= -1.0;
-    math::normalize_coordinate(extent, coordinate);
-}
-
 pub fn codegen_svg_cplane<W>(out: &mut W, cplane: &CoordinatePlane, gstyle: &impl SVGGlobalStyles<W>)
 -> std::io::Result<()>
 where W: std::io::Write
@@ -192,4 +187,9 @@ where W: std::io::Write
     style.axis_stroke_attrs(out)?;
     write!(out, "/>")?;
     return Ok(());
+}
+
+fn normalize_coordinate(extent: &BoundingRect, coordinate: &mut Vec2D) {
+    coordinate.y *= -1.0;
+    math::normalize_coordinate(extent, coordinate);
 }
