@@ -1,4 +1,4 @@
-# yapl3
+# yapl
 Experimental SVG plotting library with focus on mathematical exposition.
 
 ![sin(1/x)](readme-assets/sin1overx.png)
