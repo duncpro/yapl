@@ -1,6 +1,6 @@
-use yapl3::codegen_svg::{codegen_svg_cplane, DefaultSVGGlobalStyles};
-use yapl3::elements::{CoordinatePlane, Function};
-use yapl3::math::{ClosedInterval, NonDecreasing};
+use yapl::codegen_svg::{codegen_svg_cplane, DefaultSVGGlobalStyles};
+use yapl::elements::{CoordinatePlane, Function};
+use yapl::math::{ClosedInterval, NonDecreasing};
 
 fn main() -> std::io::Result<()> {
     let mut cplane = CoordinatePlane::new_elementary();
