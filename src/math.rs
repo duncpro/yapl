@@ -215,9 +215,6 @@ impl OpenInterval {
 
 // # Geometry
 
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Vec2D { pub x: f32, pub y: f32 }
-
 /// A rectangle positioned in two-dimensional space whoses sides are parallel to the axis.
 /// Note the rectangale may be degenerate. In other words, either of the side lengths or
 /// both may be zero.
@@ -255,3 +252,9 @@ pub fn normalize_coordinate(container: &BoundingRect, coordinate: &mut Vec2D) {
     coordinate.x = delta_x / maximum_dimension;
     coordinate.y = delta_y / maximum_dimension;
 }
+
+// # Vectors
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Vec2D { pub x: f32, pub y: f32 }
+

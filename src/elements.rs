@@ -1,4 +1,4 @@
-use crate::math::{NonDecreasing, BoundingRect, ClosedInterval};
+use crate::math::{NonDecreasing, BoundingRect, ClosedInterval, Vec2D};
 
 pub enum FunctionKind { OfX, OfY }
 
@@ -50,7 +50,7 @@ pub struct Axis {
 }
 
 pub struct CoordinatePlane {
-    pub extent: BoundingRect,
+    pub extent: Extent,
     pub horizontal_axis: Option<Axis>,
     pub vertical_axis: Option<Axis>,
     pub fns: Vec<Function>
@@ -60,9 +60,13 @@ pub struct CoordinatePlane {
 impl CoordinatePlane {
     pub fn new_elementary() -> Self {
         CoordinatePlane { 
-            extent: BoundingRect { 
-                x: ClosedInterval::new(NonDecreasing::new(-5.0, 5.0)), 
-                y: ClosedInterval::new(NonDecreasing::new(-5.0, 5.0))
+            extent: Extent {
+                brect: BoundingRect { 
+                    x: ClosedInterval::new(NonDecreasing::new(-5.0, 5.0)), 
+                    y: ClosedInterval::new(NonDecreasing::new(-5.0, 5.0))
+                },  
+                x_scale: 1.0,
+                y_scale: 1.0          
             },
             horizontal_axis: Some(Axis { unit: 1.0, offset: 0.0, pos: 0.0 }),
             vertical_axis: Some(Axis { unit: 1.0, offset: 0.0, pos: 0.0}), 
@@ -77,4 +81,16 @@ impl CoordinatePlane {
             ..Self::new_elementary()
         }
     }
+}
+
+pub struct Extent {
+    pub brect: BoundingRect,
+    pub x_scale: f32,
+    pub y_scale: f32
+}
+
+impl Extent {
+    pub fn width(&self) -> f32 { self.x_scale * self.brect.x.len() }
+    pub fn height(&self) -> f32 { self.y_scale * self.brect.y.len() }
+    pub fn area(&self) -> f32 { self.width() * self.height() }
 }

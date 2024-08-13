@@ -10,11 +10,12 @@ use yapl3::math::{ClosedInterval, NonDecreasing};
 
 fn main() -> std::io::Result<()> {
     let mut cplane = CoordinatePlane::new_minimal();
-    cplane.extent.y = ClosedInterval::new(NonDecreasing::new(-1.1, 1.1));
-    cplane.extent.x = ClosedInterval::new(NonDecreasing::new(-5.0, 5.0));
+    cplane.extent.brect.y = ClosedInterval::new(NonDecreasing::new(-1.1, 1.1));
+    cplane.extent.brect.x = ClosedInterval::new(NonDecreasing::new(-0.5, 0.5));
+    cplane.extent.x_scale = 10.0;
 
     let mut f = Function::new_default(|x| (1.0 / x).sin());
-    f.zero_tolerance_factor = 10.0f32.powi(5);
+    f.zero_tolerance_factor = 10.0f32.powi(7);
     cplane.fns.push(f);
       
     let mut out = std::fs::OpenOptions::new()
@@ -29,7 +30,6 @@ fn main() -> std::io::Result<()> {
     println!("Done");
     return Ok(())   
 }
-
 ```
 
 The end-goal of this library is to be a less-featureful replacement for 
@@ -39,7 +39,6 @@ However, that goal is a long way from being realized. At the moment this library
 provides little more than a linear interpolation algorithm.
 
 ## To Do 
-- Make it possible for the x-axis and y-axis to use different scales.
 - Draw tick marks.
 - Draw grid.
 - Support mathematical typography by integrating with KaTeX.

@@ -1,6 +1,6 @@
 // # SVG Code Generation
 
-use crate::elements::{Function, CoordinatePlane, FunctionKind};
+use crate::elements::{Function, CoordinatePlane, FunctionKind, Extent};
 use crate::math::{self, BoundingRect, Vec2D};
 use crate::plotfn::{self, PlotFnParams};
 use crate::misc::{SegVec, SegVecRoot};
@@ -11,7 +11,7 @@ where W: std::io::Write
 { 
     if cplane.extent.area() == 0.0 { return Ok(()); }
 
-    let mut bound = cplane.extent.top_right();
+    let mut bound = cplane.extent.brect.top_right();
     normalize_coordinate(&cplane.extent, &mut bound);
         
     write!(out, "<svg")?;
@@ -71,15 +71,14 @@ impl<W> SVGGlobalStyles<W> for DefaultSVGGlobalStyles where W: std::io::Write {
     }
 }
 
-fn codegen_svg_fnplot<W>(out: &mut W, extent: &BoundingRect, function: &Function, 
+fn codegen_svg_fnplot<W>(out: &mut W, extent: &Extent, function: &Function, 
     mut buf: SegVec<plotfn::Node>, gstyles: &impl SVGGlobalStyles<W>)
 -> std::io::Result<()>
 where W: std::io::Write
 {    
-    
     let (domain, codomain) = match function.kind {
-        FunctionKind::OfX => (extent.x, extent.y),
-        FunctionKind::OfY => (extent.y, extent.x),
+        FunctionKind::OfX => (extent.brect.x, extent.brect.y),
+        FunctionKind::OfY => (extent.brect.y, extent.brect.x),
     };
 
     let error_tolerance = codomain.len() / function.error_tolerance_factor;
@@ -137,11 +136,11 @@ where W: std::io::Write
     
     let mut start = Vec2D { 
         x: axis.pos,
-        y: cplane.extent.y.begin()
+        y: cplane.extent.brect.y.begin()
     };
     let mut stop = Vec2D { 
         x: axis.pos,
-        y: cplane.extent.y.end() 
+        y: cplane.extent.brect.y.end() 
     };
 
     normalize_coordinate(&cplane.extent, &mut start);
@@ -166,11 +165,11 @@ where W: std::io::Write
    let Some(axis) = cplane.horizontal_axis else { return Ok(()); };
     
     let mut start = Vec2D {
-        x: cplane.extent.x.begin(),
+        x: cplane.extent.brect.x.begin(),
         y: axis.pos
     };
     let mut stop = Vec2D {
-        x: cplane.extent.x.end(),
+        x: cplane.extent.brect.x.end(),
         y: axis.pos
     };
     
@@ -189,9 +188,16 @@ where W: std::io::Write
     return Ok(());
 }
 
-fn normalize_coordinate(extent: &BoundingRect, coordinate: &mut Vec2D) {
-    coordinate.y *= -1.0;
-    let mut reflected_extent = extent.clone();
-    reflected_extent.y.reflect();
-    math::normalize_coordinate(&reflected_extent, coordinate);
+fn normalize_coordinate(extent: &Extent, coordinate: &mut Vec2D) {
+    // The SVG coordinate system is the elementary coordinate system reflected across the x-axis.
+    // Then, multiplying the y-coordinate by -1 transforms this coordinate into the SVG system.
+    coordinate.y *= -1.0; 
+    
+    let mut svg_brect = extent.brect.clone();
+    svg_brect.y.reflect();
+    
+    math::normalize_coordinate(&svg_brect, coordinate);    
+    
+    coordinate.x *= extent.x_scale;
+    coordinate.y *= extent.y_scale;
 }
