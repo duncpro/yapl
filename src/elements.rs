@@ -44,9 +44,20 @@ impl Function {
 
 #[derive(Clone, Copy)]
 pub struct Axis { 
-    pub unit: f32,
     pub offset: f32, 
-    pub pos: f32 
+    pub stride: f32,
+    pub pos: f32,
+    pub tick_appearance_length: f32
+}
+
+impl Axis {
+    pub const DEFAULT_TICK_APPEARANCE_LENGTH: f32 = 1.0 / 100.0;
+
+    /// Creates a new [`Axis`] with the default `tick_appearance_length`.
+    pub fn new_default(offset: f32, stride: f32, pos: f32) -> Self {
+        Self { offset, stride, pos, 
+            tick_appearance_length: Self::DEFAULT_TICK_APPEARANCE_LENGTH }
+    }
 }
 
 pub struct CoordinatePlane {
@@ -68,8 +79,8 @@ impl CoordinatePlane {
                 x_scale: 1.0,
                 y_scale: 1.0          
             },
-            horizontal_axis: Some(Axis { unit: 1.0, offset: 0.0, pos: 0.0 }),
-            vertical_axis: Some(Axis { unit: 1.0, offset: 0.0, pos: 0.0}), 
+            horizontal_axis: Some(Axis::new_default(0.0, 1.0, 0.0)),
+            vertical_axis: Some(Axis::new_default(0.0, 1.0, 0.0)), 
             fns: Vec::new()
         }
     }

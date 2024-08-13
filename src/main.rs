@@ -3,13 +3,9 @@ use yapl3::elements::{CoordinatePlane, Function};
 use yapl3::math::{ClosedInterval, NonDecreasing};
 
 fn main() -> std::io::Result<()> {
-    let mut cplane = CoordinatePlane::new_minimal();
-    cplane.extent.brect.y = ClosedInterval::new(NonDecreasing::new(-1.1, 1.1));
-    cplane.extent.brect.x = ClosedInterval::new(NonDecreasing::new(-0.5, 0.5));
-    cplane.extent.x_scale = 10.0;
+    let mut cplane = CoordinatePlane::new_elementary();
 
-    let mut f = Function::new_default(|x| (1.0 / x).sin());
-    f.zero_tolerance_factor = 10.0f32.powi(7);
+    let mut f = Function::new_default(|x| 1.0 / x);
     cplane.fns.push(f);
       
     let mut out = std::fs::OpenOptions::new()
