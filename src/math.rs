@@ -44,6 +44,15 @@ impl NonDecreasing {
     /// Returns the end of this interval (maximum). The returned value is guaranteed not to
     ///  be `NaN`.
     pub fn end(&self) -> f32 { self.end }
+
+    /// Reflects this interval across zero on the number line.
+    pub fn reflect(&mut self) {
+        let new_begin = self.end * -1.0;
+        let new_end = self.begin * -1.0;
+        
+        self.begin = new_begin;
+        self.end = new_end;
+    }
 }
 
 /// A closed (includes its endpoints) non-decreasing interval of real numbers. 
@@ -98,6 +107,9 @@ impl ClosedInterval {
     /// Creates an [`OpenInterval`] whose lowerbound is equal to the beginning point of this
     /// closed interval and whose upperbound is equal to the ending point of this closed interval.
     pub fn open(&self) -> OpenInterval { OpenInterval::new(self.bounds) }
+
+    /// Reflects this interval across zero on the numberline.
+    pub fn reflect(&mut self) { self.bounds.reflect() }
 }
 
 /// The interior of a non-decreasing interval of real numbers. An open interval **does not** contain

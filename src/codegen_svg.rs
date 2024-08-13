@@ -191,5 +191,7 @@ where W: std::io::Write
 
 fn normalize_coordinate(extent: &BoundingRect, coordinate: &mut Vec2D) {
     coordinate.y *= -1.0;
-    math::normalize_coordinate(extent, coordinate);
+    let mut reflected_extent = extent.clone();
+    reflected_extent.y.reflect();
+    math::normalize_coordinate(&reflected_extent, coordinate);
 }
