@@ -226,6 +226,10 @@ pub struct BoundingRect { pub x: ClosedInterval, pub y: ClosedInterval }
 
 impl BoundingRect {
     pub fn area(&self) -> f32 { self.x.len() * self.y.len() }
+
+    pub fn top_right(&self) -> Vec2D { 
+        Vec2D { x: self.x.end(), y: self.y.begin() }
+    }
 }
 
 /// Transforms `coordinate` from an absolute position to a coordinate relative to the interior of

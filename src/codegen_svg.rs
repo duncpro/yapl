@@ -10,12 +10,12 @@ pub fn codegen_svg_cplane<W>(out: &mut W, cplane: &CoordinatePlane, gstyle: &imp
 where W: std::io::Write
 { 
     if cplane.extent.area() == 0.0 { return Ok(()); }
-    let max_len = f32::max(cplane.extent.x.len(), cplane.extent.y.len());
-    let horizontal_len = cplane.extent.x.len() / max_len;
-    let vertical_len = cplane.extent.y.len() / max_len;
-    
+
+    let mut bound = cplane.extent.top_right();
+    normalize_coordinate(&cplane.extent, &mut bound);
+        
     write!(out, "<svg")?;
-    write!(out, " viewBox=\"0 0 {} {}\"", horizontal_len, vertical_len)?;
+    write!(out, " viewBox=\"0 0 {} {}\"", bound.x, bound.y)?;
     write!(out, " xmlns=\"http://www.w3.org/2000/svg\"")?;
     write!(out, " preserveAspectRatio=\"xMinYMin meet\"")?;
     write!(out, ">")?;    
