@@ -39,7 +39,6 @@ However, that goal is a long way from being realized. At the moment this library
 provides little more than a linear interpolation algorithm.
 
 ## To Do 
-- Draw tick marks.
 - Draw grid.
 - Support mathematical typography by integrating with KaTeX.
 - Draw axis labels.
