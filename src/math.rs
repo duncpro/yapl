@@ -4,15 +4,15 @@
 /// # Properties
 /// - neither `begin` nor `end` is `NaN`
 /// - `begin` is less than or equal to `end`
-/// - `begin` or `end` or both may be infinite so long as the the previous properties hold.
+/// - `begin` or `end` or both may be infinite so long as the previous properties hold.
 #[derive(Clone, Copy, Debug)]
-pub struct NonDecreasing { begin: f32, end: f32 }
+pub struct NonDecreasing { begin: f64, end: f64 }
 
 impl NonDecreasing {
     /// Constructs a new instance of `NonDecreasing` beginning at `begin` and ending at `end`.
     /// This procedure will panic if either `begin` or `end` or both are `NaN`. 
     /// This procedure will panic if `begin` is greater than `end`.
-    pub fn new(begin: f32, end: f32) -> Self {
+    pub fn new(begin: f64, end: f64) -> Self {
         assert!(!begin.is_nan() && !end.is_nan(), 
             "Cannot construct NonDecreasing interval out of ({}, {}) because at least one argument \
              is NaN.", begin, end);
@@ -29,21 +29,21 @@ impl NonDecreasing {
     ///
     /// If the ordering of `a` and `b` is already known, use [`NonDecreasing::new`] instaed
     /// to avoid the overhead of computing the minimum and maximum of the values. 
-    pub fn minmax(a: f32, b: f32) -> Self {
+    pub fn minmax(a: f64, b: f64) -> Self {
         assert!(!a.is_nan() && !b.is_nan(), "Cannot construct NonDecreasing interval out of \
              ({}, {}) because at least one argument is NaN.", a, b);
-        let begin = f32::min(a, b);
-        let end = f32::max(a, b);
+        let begin = f64::min(a, b);
+        let end = f64::max(a, b);
         Self::new(begin, end)
     }
 
     /// Returns the beginning of this interval (minimum). The returned value is guaranteed 
     /// not to be `NaN`.
-    pub fn begin(&self) -> f32 { self.begin }
+    pub fn begin(&self) -> f64 { self.begin }
 
     /// Returns the end of this interval (maximum). The returned value is guaranteed not to
     ///  be `NaN`.
-    pub fn end(&self) -> f32 { self.end }
+    pub fn end(&self) -> f64 { self.end }
 
     /// Reflects this interval across zero on the number line.
     pub fn reflect(&mut self) {
@@ -79,15 +79,15 @@ impl ClosedInterval {
 
     /// Returns the minimum value within this interval. The returned value is guaranteed
     /// not to be `NaN` and not to infinite.
-    pub fn begin(&self) -> f32 { self.bounds.begin() }
+    pub fn begin(&self) -> f64 { self.bounds.begin() }
 
     /// Returns the maximum value within this interval. The returned value is guaranteed
     /// not to be `NaN` and not to be infinite.
-    pub fn end(&self) -> f32 { self.bounds.end() }
+    pub fn end(&self) -> f64 { self.bounds.end() }
 
     /// Computes the unsigned length of this interval. The returned value is guaranteed
     /// not to be `NaN` and not to be infinite.
-    pub fn len(&self) -> f32 { self.end() - self.begin() }
+    pub fn len(&self) -> f64 { self.end() - self.begin() }
 
     /// Determines whether `value` is an element of this closed interval. 
     ///
@@ -95,7 +95,7 @@ impl ClosedInterval {
     /// - `value` is equal to `begin`.
     /// - `value` is equal to `end`.
     /// - `value` is between `begin` and `end`.
-    pub fn includes(&self, value: f32) -> bool { value >= self.begin() && value <= self.end() }
+    pub fn includes(&self, value: f64) -> bool { value >= self.begin() && value <= self.end() }
 
     /// Returns true if the interval `into_other` is equal to this interval or contained within this
     /// interval.
@@ -107,9 +107,6 @@ impl ClosedInterval {
     /// Creates an [`OpenInterval`] whose lowerbound is equal to the beginning point of this
     /// closed interval and whose upperbound is equal to the ending point of this closed interval.
     pub fn open(&self) -> OpenInterval { OpenInterval::new(self.bounds) }
-
-    /// Reflects this interval across zero on the numberline.
-    pub fn reflect(&mut self) { self.bounds.reflect() }
 }
 
 /// The interior of a non-decreasing interval of real numbers. An open interval **does not** contain
@@ -125,8 +122,8 @@ impl From<OpenInterval> for NonDecreasing {
 impl OpenInterval {
     pub fn new(bounds: NonDecreasing) -> Self { Self { bounds } }
 
-    pub fn lowerbound(self) -> f32 { self.bounds.begin() }
-    pub fn upperbound(self) -> f32 { self.bounds.end() }
+    pub fn lowerbound(self) -> f64 { self.bounds.begin() }
+    pub fn upperbound(self) -> f64 { self.bounds.end() }
 
     /// Returns true if this open interval contains no points. Importantly, (infinity, infinity) 
     /// and (-infinity, -infinity) are considered empty along with every other interval of the
@@ -205,12 +202,12 @@ impl OpenInterval {
     /// This function is commutative.
     pub fn is_disjoint_with(self, other: OpenInterval) -> bool { !self.overlaps(other) }
 
-    pub fn includes(self, value: f32) -> bool { 
+    pub fn includes(self, value: f64) -> bool {
         self.lowerbound() < value && value < self.upperbound()
     }
 
     /// This is the negation of [`Self::includes`].
-    pub fn excludes(self, value: f32) -> bool { !self.includes(value) }
+    pub fn excludes(self, value: f64) -> bool { !self.includes(value) }
 }
 
 // # Geometry
@@ -222,39 +219,19 @@ impl OpenInterval {
 pub struct BoundingRect { pub x: ClosedInterval, pub y: ClosedInterval }
 
 impl BoundingRect {
-    pub fn area(&self) -> f32 { self.x.len() * self.y.len() }
+    pub fn area(&self) -> f64 { self.x.len() * self.y.len() }
 
     pub fn top_right(&self) -> Vec2D { 
         Vec2D { x: self.x.end(), y: self.y.begin() }
     }
-}
 
-/// Transforms `coordinate` from an absolute position to a coordinate relative to the interior of
-/// `container`.
-///
-/// For instance, if `container` is a square then the lower left (minimum) corner will have
-/// a normalized coordinate of (0.0, 0.0) and the upper right (maximum) corner will have a 
-/// a normalized coordinate of (1.0, 1.0).
-///
-/// If the coordinate is not coincident with `container` then the resultant relative
-/// coordinate's components will fall outside the range...
-/// - `0 <= x <= container.x.len() / maximum_dimension`
-/// - `0 <= y <= container.y.len() / maximum_dimension`
-///
-/// This procedure will panic if `container` is degenerated to a point (has an area of zero)
-/// since in this case `coordinate` has no position relative to `container` it *is* `container`.
-pub fn normalize_coordinate(container: &BoundingRect, coordinate: &mut Vec2D) {
-    assert_ne!(container.area(), 0.0, "container's interior is undefined and therefore so \
-        is the interior coordinate system.");
-    let delta_x = coordinate.x - container.x.bounds.begin();
-    let delta_y = coordinate.y - container.y.bounds.begin();
-    let maximum_dimension = f32::max(container.x.len(), container.y.len());
-    coordinate.x = delta_x / maximum_dimension;
-    coordinate.y = delta_y / maximum_dimension;
+    pub fn includes(&self, point: &Vec2D) -> bool {
+        self.x.includes(point.x) && self.y.includes(point.y)
+    }
 }
 
 // # Vectors
 
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Vec2D { pub x: f32, pub y: f32 }
+pub struct Vec2D { pub x: f64, pub y: f64 }
 

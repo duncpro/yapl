@@ -58,7 +58,7 @@ pub struct PlotFnParams {
     ///
     /// For example, given the codomain [-k, k] and the window height h pixels, the `error_tolerance`
     /// should be set to 2k / h.
-    pub error_tolerance: f32,
+    pub error_tolerance: f64,
 
     /// The minimum distance along the x-axis that is visible given the scale of the graph
     /// and the resolution of the display.
@@ -80,12 +80,12 @@ pub struct PlotFnParams {
     /// should be below 2k / h.
     ///
     /// Exactly how small this value is will depend on the function being plotted. 
-    pub zero_tolerance: f32
+    pub zero_tolerance: f64
 }
 
 
 #[derive(Clone, Copy, PartialEq)]
-pub struct Anchor { pub input: f32 }
+pub struct Anchor { pub input: f64 }
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum Node { Break, Anchor(Anchor) }
@@ -105,14 +105,14 @@ struct State { domain: ClosedInterval, depth: usize }
 
 // # Plotting Algorithm
 
-pub fn plotfn(f: &Box<dyn Fn(f32) -> f32>, nodes: &mut SegVec<Node>, params: PlotFnParams) -> Stats
+pub fn plotfn(f: &Box<dyn Fn(f64) -> f64>, nodes: &mut SegVec<Node>, params: PlotFnParams) -> Stats
 {
     assert!(params.error_tolerance >= 0.0);
     assert!(params.zero_tolerance >= 0.0);
     return bisect(f, params, nodes);
 }
 
-fn bisect(f: &Box<dyn Fn(f32) -> f32>, params: PlotFnParams, nodes: &mut SegVec<Node>) -> Stats {
+fn bisect(f: &Box<dyn Fn(f64) -> f64>, params: PlotFnParams, nodes: &mut SegVec<Node>) -> Stats {
     let mut stack: Vec<State> = vec![State { domain: params.domain, depth: 0 }];
     let mut stats = Stats::default();
     let begin = std::time::Instant::now();
