@@ -1,6 +1,5 @@
-use std::f64::consts::PI;
 use yapl::codegen::{DefaultGlobalStyles, codegen_cplane};
-use yapl::elements::{CoordinatePlane, Axis, TickLabel, SymbolicTickLabel};
+use yapl::elements::CoordinatePlane;
 use yapl::elements::Function;
 use yapl::math::{NonDecreasing, ClosedInterval};
 use yapl::typesetting::MathJaxProcessTexRenderer;
