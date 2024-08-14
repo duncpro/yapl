@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 pub trait TeXRenderer {
     /// Renders the given TeX source string into SVG and writes it to `destin`.
     fn render(
@@ -40,10 +42,15 @@ pub trait TeXRenderer {
 // TODO: MathJaxProcessTexRenderer should implement render_num so as not to allocate
 //       every time a number is typeset, like the default implementation does.
 
-pub struct MathJaxProcessTexRenderer { entrypoint: String }
+pub struct MathJaxProcessTexRenderer { pub entrypoint: PathBuf }
 
 impl MathJaxProcessTexRenderer {
-    pub fn new(entrypoint: String) -> Self { Self { entrypoint } }
+    pub fn new() -> Self {
+        let mut path = std::path::PathBuf::new();
+        path.push(env!("CARGO_MANIFEST_DIR"));
+        path.push("mathjax-wrapper/main.mjs");
+        Self { entrypoint: path }
+    }
 }
 
 impl TeXRenderer for MathJaxProcessTexRenderer {
@@ -52,7 +59,7 @@ impl TeXRenderer for MathJaxProcessTexRenderer {
     -> std::io::Result<()> 
     {
         let mut command = std::process::Command::new("node");
-        command.arg(&self.entrypoint);
+        command.arg(self.entrypoint.to_str().unwrap());
         if let Some(arg) = preserve_aspect_ratio { command.arg(arg); }
         command.stdout(std::process::Stdio::piped());
         command.stdin(std::process::Stdio::piped());
