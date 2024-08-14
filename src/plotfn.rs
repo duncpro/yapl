@@ -147,7 +147,7 @@ fn bisect(f: &Box<dyn Fn(f64) -> f64>, params: PlotFnParams, nodes: &mut SegVec<
                     // surface, stop bisecting and just accept the approximation, no matter
                     // how innacurate it is. At this microscopic scale, the innacuracy will
                     // likely be negligible.
-                    let will_disappear = state.domain.len() <= 2.0 * params.zero_tolerance;
+                    let will_disappear = state.domain.len() == params.zero_tolerance;
                     if (is_within_error_tolerance || will_disappear) && is_framed {
                         let left_anchor = Node::Anchor(Anchor { input: state.domain.begin() });
                         if nodes.as_slice().last().copied() != Some(left_anchor) {
