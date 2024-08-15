@@ -1,9 +1,8 @@
 use std::path::PathBuf;
 
 pub trait TeXRenderer {
-    /// Renders the given TeX source string into SVG and writes it to `destin`.
     fn render(
-        &self, 
+        &mut self, 
         tex_src: &mut impl std::io::Read, 
         svg_destin: &mut impl std::io::Write,
         preserve_aspect_ratio: Option<&'static str>,
@@ -11,7 +10,7 @@ pub trait TeXRenderer {
     -> std::io::Result<()>;
 
     fn render_str(
-        &self, 
+        &mut self, 
         tex_str: &str, 
         html_destin: &mut impl std::io::Write,
         preserve_aspect_ratio: Option<&'static str>
@@ -23,7 +22,7 @@ pub trait TeXRenderer {
     }
 
     fn render_num(
-        &self, 
+        &mut self, 
         num: f64, 
         html_destin: &mut impl std::io::Write,        
         preserve_aspect_ratio: Option<&'static str>
@@ -54,7 +53,7 @@ impl MathJaxProcessTeXRenderer {
 }
 
 impl TeXRenderer for MathJaxProcessTeXRenderer {
-    fn render(&self, tex_src: &mut impl std::io::Read, svg_destin: &mut impl std::io::Write,
+    fn render(&mut self, tex_src: &mut impl std::io::Read, svg_destin: &mut impl std::io::Write,
         preserve_aspect_ratio: Option<&'static str>)
     -> std::io::Result<()> 
     {
