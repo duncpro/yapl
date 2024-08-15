@@ -2,14 +2,14 @@ use crate::elements::axis::Axis;
 use crate::elements::function::Function;
 use crate::math::{BoundingRect, ClosedInterval, NonDecreasing};
 
-pub struct CoordinatePlane {
+pub struct CoordinatePlane<'a> {
     pub extent: Extent,
-    pub horizontal_axis: Option<Axis>,
-    pub vertical_axis: Option<Axis>,
-    pub fns: Vec<Function>
+    pub horizontal_axis: Option<Axis<'a>>,
+    pub vertical_axis: Option<Axis<'a>>,
+    pub fns: Vec<Function<'a>>
 }
 
-impl CoordinatePlane {
+impl<'a> CoordinatePlane<'a> {
     pub fn new_elementary() -> Self {
         CoordinatePlane {
             extent: Extent {

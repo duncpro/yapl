@@ -42,9 +42,9 @@ pub trait TeXRenderer {
 // TODO: MathJaxProcessTexRenderer should implement render_num so as not to allocate
 //       every time a number is typeset, like the default implementation does.
 
-pub struct MathJaxProcessTexRenderer { pub entrypoint: PathBuf }
+pub struct MathJaxProcessTeXRenderer { pub entrypoint: PathBuf }
 
-impl MathJaxProcessTexRenderer {
+impl MathJaxProcessTeXRenderer {
     pub fn new() -> Self {
         let mut path = std::path::PathBuf::new();
         path.push(env!("CARGO_MANIFEST_DIR"));
@@ -53,7 +53,7 @@ impl MathJaxProcessTexRenderer {
     }
 }
 
-impl TeXRenderer for MathJaxProcessTexRenderer {
+impl TeXRenderer for MathJaxProcessTeXRenderer {
     fn render(&self, tex_src: &mut impl std::io::Read, svg_destin: &mut impl std::io::Write,
         preserve_aspect_ratio: Option<&'static str>)
     -> std::io::Result<()> 
@@ -69,3 +69,5 @@ impl TeXRenderer for MathJaxProcessTexRenderer {
         return Ok(())
     }
 }
+
+pub const DEFAULT_TYPOGRAPHY_HEIGHT: f64 = 2.0 / 100.0;

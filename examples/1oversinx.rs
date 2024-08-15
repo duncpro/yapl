@@ -1,8 +1,8 @@
-use yapl::codegen::{DefaultGlobalStyles, codegen_cplane};
-use yapl::elements::CoordinatePlane;
-use yapl::elements::Function;
+use yapl::elements::{CoordinatePlane, Function};
 use yapl::math::{NonDecreasing, ClosedInterval};
-use yapl::typesetting::MathJaxProcessTexRenderer;
+use yapl::style::Stylesheet;
+use yapl::typography::MathJaxProcessTeXRenderer;
+use yapl::codegen::codegen;
 
 fn main() -> std::io::Result<()> {
     let mut cplane = CoordinatePlane::new_minimal();
@@ -13,12 +13,15 @@ fn main() -> std::io::Result<()> {
     let mut f = Function::new_default(|x| (1.0 / x).sin());
     f.zero_tolerance_factor = 10.0f64.powi(7);
     cplane.fns.push(f);
-      
-    let mut out = std::fs::OpenOptions::new().write(true).create(true).truncate(true)
-        .open("1oversinx.svg")?;
-    
-    let global_styles = DefaultGlobalStyles::new();   
-    let tex_renderer = MathJaxProcessTexRenderer::new();
-    codegen_cplane(&mut out, &cplane, &global_styles, &tex_renderer)?;
+
+    let mut out_path = std::path::PathBuf::new();
+    out_path.push(env!("CARGO_MANIFEST_DIR"));
+    out_path.push("examples");
+    out_path.push("1oversinx.svg");
+    let mut out = std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(out_path)?;
+       
+    let mut tex_renderer = MathJaxProcessTeXRenderer::new();
+    let stylesheet = Stylesheet::new_default();
+    codegen(&mut out, &cplane, stylesheet, &mut tex_renderer)?;
     return Ok(())   
 }
