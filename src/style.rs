@@ -21,7 +21,7 @@ use crate::elements::axis::TickDefaultStyleClass;
 /// # Example: Disable Class
 /// ```rust
 /// let mut def_global_styles = DefaultGlobalStyleClasses::ENABLED;
-/// def_clobal_styles.function = FunctionDefaultStyleClass::DISABLED;
+/// def_global_styles.function = FunctionDefaultStyleClass::DISABLED;
 /// ```
 ///
 /// # Example: Disable Stylesheet

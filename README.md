@@ -65,7 +65,7 @@ a few lines so that it is very clear what is going on and how the behavior can b
 
 This library exposes a simple flag-based API for opting out of default style rules
 and default style  classes on per-element and global basis. This provide a way for the user
-to omit adefault styling rule entirely if they wish to override it with a rule in their own 
+to omit a default styling rule entirely if they wish to override it with a rule in their own 
 custom stylesheet. This keeps redundant default styles out of the finished SVG.
 
 A custom stylesheet can be applied in addition to the default stylesheet using 
