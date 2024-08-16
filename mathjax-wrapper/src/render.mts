@@ -1,10 +1,11 @@
+// @ts-ignore
 import * as mathjax from "mathjax";
 
 // MathJax provides a variety of conversions, however yapl is concerned only with
 // the TeX to SVG conversion, so we load just that.
 const MathJax = await mathjax.init({ loader: { load: ['input/tex', 'output/svg'] } });
 
-export function renderSVG(tex, preserveAspectRatio) {
+export function renderSVG(tex: string, preserveAspectRatio: string): string {
   // MathJax wraps the SVG in and HTML container element.
   // Since yapl generates pure SVGs, this container element must be removed.
   const html_container = MathJax.tex2svg(tex, {display: false});
@@ -22,8 +23,13 @@ export function renderSVG(tex, preserveAspectRatio) {
   return MathJax.startup.adaptor.outerHTML(svg);
 }
 
-export function renderCSS() { 
+export function dumpCSS() { 
   const stylesheet = MathJax.svgStylesheet();
-  MathJax.startup.output.clearCache();
-  return stylesheet;
+
+  // Curerntly not necessary, nor defined, since MathJax does not support stylesheet pruning
+  // for the SVG target. Hopefully in the future they will support pruning for SVG, just
+  // like they do currently for HTML. If/when that happens, this can be uncommented.
+  // MathJax.startup.output.clearCache();
+  
+  return MathJax.startup.adaptor.innerHTML(stylesheet);
 }

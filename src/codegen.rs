@@ -33,6 +33,7 @@ where T: TeXRenderer,
       W: std::io::Write
 {
     fn codegen_stylesheet(&mut self, cplane: &CoordinatePlane) -> std::io::Result<()> {
+        // Compute which style classes from the default stylesheet are in use.
         let def_fn_count = cplane.fns.iter().filter(|f| f.apply_default_style_class).count();
         let mut def_axis_count = 0usize;
         let mut def_tick_count = 0usize;
@@ -59,6 +60,8 @@ where T: TeXRenderer,
 
         write!(self.out, "<style>")?;
         write!(self.out, "<![CDATA[")?;
+
+        // Write the default stylesheet.
         if def_fn_count > 0 {
             write_function_default_style_class(self.out, &self.stylesheet.defaults.function)?;
         }
@@ -68,9 +71,15 @@ where T: TeXRenderer,
         if def_tick_count > 0 {
             write_tick_default_style_class(self.out, &self.stylesheet.defaults.tick)?;
         }
+        
+        // Write the typographic stylesheet.
+        self.tex_renderer.dump_css(self.out)?;
+
+        // Write the custom stylesheet.
         if let Some(custom_styles) = self.stylesheet.custom {
             write!(self.out, "{}", custom_styles)?;
         }
+
         write!(self.out, "]]>")?;
         write!(self.out, "</style>")?;
         
@@ -88,8 +97,7 @@ where T: TeXRenderer,
         write!(self.out, " xmlns=\"http://www.w3.org/2000/svg\"")?;
         write!(self.out, " preserveAspectRatio=\"xMinYMin meet\"")?;
         write!(self.out, ">")?;    
-        self.codegen_stylesheet(cplane)?;
-        {
+         {
             let mut buf: SegVecRoot<plotfn::Node> = SegVecRoot::default();
             for function in &cplane.fns {
                 self.codegen_fnplot(&cplane.extent, function, buf.extend())?;
@@ -101,6 +109,11 @@ where T: TeXRenderer,
         self.codegen_vertical_axis_ticks(cplane)?;
         self.codegen_horizontal_axis_tick_labels(cplane)?;
         self.codegen_vertical_axis_tick_labels(cplane)?;
+
+        // Make sure to generate the stylesheet last. The TeXRenderer may generate
+        // a specially tailored minimal stylesheet based on the requests it received over
+        // the duratino of the compilation.
+        self.codegen_stylesheet(cplane)?;
         write!(self.out, "</svg>")?;
         return Ok(())
     }

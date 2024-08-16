@@ -26,7 +26,7 @@ fn main() -> std::io::Result<()> {
     let mut out = std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(out_path)?;
         
     let stylesheet = Stylesheet::new_default();
-    let mut tex_renderer = MathJaxProcessTeXRenderer::new();
+    let mut tex_renderer = MathJaxProcessTeXRenderer::new()?;
     codegen(&mut out, &cplane, stylesheet, &mut tex_renderer)?;
     return Ok(())   
 }

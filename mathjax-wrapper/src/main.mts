@@ -19,7 +19,7 @@
 // All integer types which appear in the protocol are little endian.
 //
 // ### Incoming Packets
-// An incoming packet is a variable-length sequence of bytes beginning with an unsigned 8-bit
+// An incoming packet is a variable-length sequence of bytes beginning with an unsigned 32-bit
 // `IncomingPacketType` header, followed by the so-called packet body. The shape of the body
 // is dependent on the packet type.
 //
@@ -82,11 +82,36 @@
 // Then the program will terminate with a exit code of zero.
 //
 // There is no corresponding response packet for `ShutdownRequest`.
-import { readn, write } from "./io.mjs";
-import { renderSVG, renderCSS } from "./render.mjs";
+import { readn, write, end } from "./io.mjs";
+import { renderSVG, dumpCSS } from "./render.mjs";
 
-while (true) {
-  const reqid = (await readn(process.stdin, 1)).readUInt8();
+async function handleConversionRequest() {
+  const PreserveAspectRatioLength = (await readn(process.stdin, 4)).readUInt32LE();
+  const PreserveAspectRatio = (await readn(process.stdin, PreserveAspectRatioLength))
+    .toString('utf-8');
+  const InputTeXLength = (await readn(process.stdin, 4)).readUInt32LE();
+  const InputTeX = (await readn(process.stdin, InputTeXLength)).toString('utf-8');
+  const OutputSVG = Buffer.from(renderSVG(InputTeX, PreserveAspectRatio), 'utf-8');
+  const OutputSVGLength = Buffer.alloc(4);
+  OutputSVGLength.writeUInt32LE(OutputSVG.byteLength);
+  await write(OutputSVGLength, process.stdout);
+  await write(OutputSVG, process.stdout);
+}
+
+async function handleStylesheetRequest() {
+  const OutputCSS = Buffer.from(dumpCSS(), 'utf-8');
+  const OutputCSSLength = Buffer.alloc(4);
+  OutputCSSLength.writeUInt32LE(OutputCSS.byteLength);
+  await write(OutputCSSLength, process.stdout);
+  await write(OutputCSS, process.stdout);
+}
+
+
+// # Request Loop
+
+let open = true;
+while (open) {
+  const reqid = (await readn(process.stdin, 4)).readUInt32LE();
   switch (reqid) {
     case 0: // ConversionRequest
       await handleConversionRequest();
@@ -95,32 +120,13 @@ while (true) {
       await handleStylesheetRequest();
       break;
     case 2: // ShutdownRequest
-      process.exit(0);
+      process.exitCode = 0;
+      open = false;
+      break;
     default:
-      process.exit(1);
+      process.exitCode = 1;
+      open = false;
   }
 }
 
-async function handleConversionRequest() {
-  const PreserveAspectRatioLength = (await readn(process.stdin, 4)).readUInt32LE();
-  const PreserveAspectRatio = (await readn(process.stdin, PreserveAspectRatioLength))
-    .toString('utf-8');
-  const InputTeXLength = (await readn(process.stdin, 4)).readUint32LE();
-  const InputTeX = (await readn(process.stdin, InputTeXLength)).toString('utf-8');
-  
-  const OutputSVG = Buffer.from(renderSVG(InputTeX, PreserveAspectRatio), 'utf-8');
-  const OutputSVGLength = Buffer.alloc(4);
-  OutputSVGLength.writeUInt32LE(OutputSVG.byteLength);
-
-  await write(OutputSVGLength, process.stdout);
-  await write(OutputSVG, process.stdout);
-}
-
-async function handleStylesheetRequest() {
-  const OutputCSS = Buffer.from(renderCSS(), 'utf-8');
-  const OutputCSSLength = Buffer.alloc(4);
-  OutputCSSLength.writeUInt32LE(OutputCSS.byteLength);
-  await write(OutputCSSLength, process.stdout);
-
-  await write(OutputCSS, process.stdout);
-}
+await end(process.stdout);

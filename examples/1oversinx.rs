@@ -20,7 +20,7 @@ fn main() -> std::io::Result<()> {
     out_path.push("1oversinx.svg");
     let mut out = std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(out_path)?;
        
-    let mut tex_renderer = MathJaxProcessTeXRenderer::new();
+    let mut tex_renderer = MathJaxProcessTeXRenderer::new()?;
     let stylesheet = Stylesheet::new_default();
     codegen(&mut out, &cplane, stylesheet, &mut tex_renderer)?;
     return Ok(())   
