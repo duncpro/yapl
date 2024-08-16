@@ -1,3 +1,5 @@
+use std::io::BufWriter;
+
 use yapl::elements::{CoordinatePlane, Function};
 use yapl::math::{NonDecreasing, ClosedInterval};
 use yapl::style::Stylesheet;
@@ -18,7 +20,8 @@ fn main() -> std::io::Result<()> {
     out_path.push(env!("CARGO_MANIFEST_DIR"));
     out_path.push("examples");
     out_path.push("1oversinx.svg");
-    let mut out = std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(out_path)?;
+    let file = std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(out_path)?;
+    let mut out = BufWriter::new(file);
        
     let mut tex_renderer = MathJaxProcessTeXRenderer::new()?;
     let stylesheet = Stylesheet::new_default();

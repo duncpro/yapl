@@ -1,4 +1,5 @@
 use std::f64::consts::PI;
+use std::io::BufWriter;
 use yapl::elements::{Function, CoordinatePlane, Axis, TickLabelKind, SymbolicTickLabel, TickLabel};
 use yapl::math::{NonDecreasing, ClosedInterval};
 use yapl::typography::MathJaxProcessTeXRenderer;
@@ -23,7 +24,8 @@ fn main() -> std::io::Result<()> {
     out_path.push(env!("CARGO_MANIFEST_DIR"));
     out_path.push("examples");
     out_path.push("sinx.svg");
-    let mut out = std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(out_path)?;
+    let file = std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(out_path)?;
+    let mut out = BufWriter::new(file); 
         
     let stylesheet = Stylesheet::new_default();
     let mut tex_renderer = MathJaxProcessTeXRenderer::new()?;

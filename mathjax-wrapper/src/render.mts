@@ -24,12 +24,17 @@ export function renderSVG(tex: string, preserveAspectRatio: string): string {
 }
 
 export function dumpCSS() { 
-  const stylesheet = MathJax.svgStylesheet();
+  // Currently not necessary. It seems the stylesheet produced by the MathJax SVG renderer is
+  // superficial with respect to in our use-case.
+  //
+  // const stylesheet = MathJax.startup.adaptor.innerHTML(MathJax.svgStylesheet());
+  const stylesheet = "";
 
   // Curerntly not necessary, nor defined, since MathJax does not support stylesheet pruning
   // for the SVG target. Hopefully in the future they will support pruning for SVG, just
   // like they do currently for HTML. If/when that happens, this can be uncommented.
+  //
   // MathJax.startup.output.clearCache();
-  
-  return MathJax.startup.adaptor.innerHTML(stylesheet);
+
+  return stylesheet;
 }
