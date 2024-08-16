@@ -82,6 +82,7 @@
 // Then the program will terminate with a exit code of zero.
 //
 // There is no corresponding response packet for `ShutdownRequest`.
+
 import { readn, write, end } from "./io.mjs";
 import { renderSVG, dumpCSS } from "./render.mjs";
 

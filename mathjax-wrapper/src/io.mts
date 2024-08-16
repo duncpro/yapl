@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { once } from "node:events";
 import { Readable, Writable } from "node:stream";
-import { fallible } from "./util.mjs";
+import { promise, fallible } from "./util.mjs";
 
 // Asynchronously consumes `n` bytes from the given stream.
 // - If the stream is closed, the promise will reject.
@@ -27,7 +27,7 @@ export async function readn(stream: Readable, n: number): Promise<Buffer> {
 //
 // Returns a `Promise` which resolves when the buffer has been written to `destin` or
 // rejects if an error occurs while writing to `destin`.
-export async function write(buf: Buffer, destin: Writable): Promise<null> {
+export async function write(buf: Buffer, destin: Writable): Promise<void> {
   const [result, handler] = fallible();
   if (!destin.write(buf, handler)) {
     await once(destin, 'drain');
@@ -35,8 +35,9 @@ export async function write(buf: Buffer, destin: Writable): Promise<null> {
   return result;
 }
 
+// Closes the given output stream, flushing its buffer to the destination.
 export function end(stream: Writable): Promise<void> {
-  return new Promise(resolve => {
-    stream.end(() => resolve());
-  })
+  const [result, resolve] = promise<void>();
+  stream.end(() => resolve());
+  return result;
 }
