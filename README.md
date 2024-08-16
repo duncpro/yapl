@@ -38,7 +38,7 @@ fn main() -> std::io::Result<()> {
     cplane.fns.push(Function::new_default(|x| x.sin()));
     
     let stylesheet = Stylesheet::new_default();
-    let mut tex_renderer = MathJaxProcessTeXRenderer::new();
+    let mut tex_renderer = MathJaxProcessTeXRenderer::new()?;
     codegen(&mut std::io::stdout(), &cplane, stylesheet, &mut tex_renderer)
 }
 ```
