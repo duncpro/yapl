@@ -6,12 +6,14 @@ include = [
   "src/**/*",
   "./Cargo.toml",
   "./README.md",
-  "./mathjax-wrapper/src/**/*",
+  "./mathjax-wrapper/src/**/*.mts",
+  "./mathjax-wrapper/src/**/*.mjs",
   "./mathjax-wrapper/package.json",
   "./mathjax-wrapper/package-lock.json",
   "./mathjax-wrapper/tsconfig.json",
-  "./examples/**/*",
-  "./readme-assets/**/*"
+  "./examples/**/*.rs",
+  "./readme-assets/**/*.svg",  
+  "./readme-assets/**/*.png"
 ]
 exclude = [
   ".DS_STORE"
