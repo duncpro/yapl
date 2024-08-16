@@ -1,5 +1,5 @@
 /target
 .DS_STORE
-out.svg
 /.idea
-**/node_modules/
+/mathjax-wrapper/node_modules
+/mathjax-wrapper/target

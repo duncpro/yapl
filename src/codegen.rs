@@ -19,7 +19,6 @@ where T: TeXRenderer, W: std::io::Write
     return Ok(());
 }
 
-
 struct CodegenCtx<'a, T, W> 
 where T: TeXRenderer, 
       W: std::io::Write

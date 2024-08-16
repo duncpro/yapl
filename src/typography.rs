@@ -18,7 +18,7 @@ pub trait TeXRenderer {
     -> std::io::Result<()>
     {
         let mut cursor = std::io::Cursor::new(tex_str);
-        self.render(&mut cursor, html_destin, preserve_aspect_ratio)
+        self.render(&mut cursor, html_destin,    preserve_aspect_ratio)
     }
 
     fn render_num(
@@ -70,3 +70,28 @@ impl TeXRenderer for MathJaxProcessTeXRenderer {
 }
 
 pub const DEFAULT_TYPOGRAPHY_HEIGHT: f64 = 2.0 / 100.0;
+
+pub struct MathJaxProcessTeXRenderer2 {
+    process: std::process::Child
+}
+
+impl MathJaxProcessTeXRenderer2 {
+    pub fn new() -> Self {
+        let mut path = std::path::PathBuf::new();
+        path.push(env!("CARGO_MANIFEST_DIR"));
+        path.push("mathjax-wrapper/target/main.mjs");
+
+        let mut command = std::process::Command::new("node");
+        command.arg(self.entrypoint.to_str().unwrap());
+        if let Some(arg) = preserve_aspect_ratio { command.arg(arg); }
+        command.stdout(std::process::Stdio::piped());
+        command.stdin(std::process::Stdio::piped());
+        let mut process = command.spawn()?;
+        
+        Self { entrypoint: path }
+    }
+}
+
+impl MathJaxProcessTeXRenderer2 {
+    
+}
