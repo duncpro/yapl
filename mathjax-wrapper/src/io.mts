@@ -8,7 +8,7 @@ import { fallible } from "./util.mjs";
 // - If the stream emits an error, the promise will reject.
 // - If `n` bytes are consumed, a buffer containing them is returned.
 export async function readn(stream: Readable, n: number): Promise<Buffer> {
-  assert(Number.isInteger(n), "n must be n an integer");
+  assert(Number.isInteger(n), "n must be an integer");
   assert(n >= 0, "n must be non-negative");
   if (n == 0) return Buffer.alloc(0); // A `readable` event will never be emitted.
   let buffer: Buffer | null = null;
