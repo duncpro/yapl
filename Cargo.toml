@@ -3,17 +3,19 @@ name = "yapl"
 version = "0.1.0-wip"
 edition = "2021"
 include = [
-  "src/*",
-  "Cargo.toml",
-  "README.md",
-  "mathjax-wrapper/src/*",
-  "mathjax-wrapper/package.json",
-  "mathjax-wrapper/package-lock.json",
-  "mathjax-wrapper/tsconfig.json",
-  "examples/*",
-  "readme-assets/*"
+  "src/**/*",
+  "./Cargo.toml",
+  "./README.md",
+  "./mathjax-wrapper/src/**/*",
+  "./mathjax-wrapper/package.json",
+  "./mathjax-wrapper/package-lock.json",
+  "./mathjax-wrapper/tsconfig.json",
+  "./examples/**/*",
+  "./readme-assets/**/*"
 ]
-
+exclude = [
+  ".DS_STORE"
+]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

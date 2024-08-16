@@ -3,3 +3,4 @@
 /.idea
 /mathjax-wrapper/node_modules
 /mathjax-wrapper/target
+/examples/*.svg
