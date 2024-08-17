@@ -36,7 +36,7 @@ use crate::elements::axis::TickDefaultStyleClass;
 /// # Example: Disable Class for Single Element
 /// ```rust
 /// use yapl::elements::Function;
-/// let mut function = Function::new_default(|x| x);
+/// let mut function = Function::new_elementary(|x| x);
 /// function.apply_default_style_class = false;
 /// ```
 ///

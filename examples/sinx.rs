@@ -16,7 +16,7 @@ fn main() -> std::io::Result<()> {
     cplane.extent.brect.x = ClosedInterval::new(NonDecreasing::new(-2.0 * PI - 1.0, 2.0 * PI + 1.0));
     cplane.extent.brect.y = ClosedInterval::new(NonDecreasing::new(-1.5, 1.5));
 
-    let f = Function::new_default(|x| x.sin());
+    let f = Function::new_elementary(|x| x.sin());
     cplane.fns.push(f);
 
     let mut out_path = std::path::PathBuf::new();

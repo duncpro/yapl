@@ -21,7 +21,7 @@ pub struct Function<'a> {
     pub apply_default_style_class: bool,
 
     /// Space-delimited list of names of custom CSS styles classes to include in the `class`
-    /// attibute of the `path` element. 
+    /// attribute of the `path` element.
     ///
     /// Note that these classes are in addition to the default style class name, unless
     /// of course the default style class name has been explicitly omitted by setting
@@ -31,13 +31,20 @@ pub struct Function<'a> {
 
 impl<'a> Function<'a> {
     pub const DEFAULT_MIN_DEPTH: usize = 4;
-    /// Based on the average display width in physical pixels.
-    pub const DEFAULT_ERROR_TOLERANCE_FACTOR: f64 = 2000.0;
-    /// Based on the average display width in physical pixels.
-    pub const DEFAULT_ZERO_TOLERANCE_FACTOR: f64 = 2000.0;
+    pub const DEFAULT_ERROR_TOLERANCE_FACTOR: f64 = 100000.0 /* 10f64.powi(5) */;
+    pub const DEFAULT_ZERO_TOLERANCE_FACTOR: f64 = 100000.0 /* 10f64.powi(5) */;
     pub const DEFAULT_KIND: FunctionKind = FunctionKind::OfX;
 
-    pub fn new_default<F>(f: F) -> Self
+    /// Constructs a new [`Function`] with parameters suitable for displaying any elementary function.
+    /// This constructor is to be used in tandem with [`crate::elements::CoordinatePlane::new_elementary`].
+    /// The set of elementary functions are...
+    /// - `y = x`
+    /// - `y = x^2`
+    /// - `y = x^3`
+    /// - `y = ln(x)`
+    /// - `y = sin(x)`
+    /// - `y = 1/x`
+    pub fn new_elementary<F>(f: F) -> Self
     where F: Fn(f64) -> f64 + 'static
     {
         Function {

@@ -10,7 +10,7 @@ fn main() -> std::io::Result<()> {
     cplane.extent.brect.y = ClosedInterval::new(NonDecreasing::new(-1.1, 1.1));
     cplane.extent.x_scale = 8.0;
 
-    let mut f = Function::new_default(|x| (1.0 / x).sin());
+    let mut f = Function::new_elementary(|x| (1.0 / x).sin());
     f.zero_tolerance_factor = 10.0f64.powi(7);
     cplane.fns.push(f);
 

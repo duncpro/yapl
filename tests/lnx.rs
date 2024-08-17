@@ -1,20 +1,15 @@
-use yapl::elements::{CoordinatePlane, Function};
-use yapl::math::{NonDecreasing, ClosedInterval};
-use yapl::style::Stylesheet;
+use yapl::elements::{Function, CoordinatePlane};
 use yapl::typography::MathJaxProcessTeXRenderer;
 use yapl::codegen::codegen;
+use yapl::style::Stylesheet;
 
 #[test]
-fn test_1oversinx() -> std::io::Result<()> {
-    let mut cplane = CoordinatePlane::new_minimal();
-    cplane.extent.brect.x = ClosedInterval::new(NonDecreasing::new(-0.5, 0.5));
-    cplane.extent.brect.y = ClosedInterval::new(NonDecreasing::new(-1.1, 1.1));
-    cplane.extent.x_scale = 8.0;
+fn test_lnx() -> std::io::Result<()> {
+    let mut cplane = CoordinatePlane::new_elementary();
 
-    let mut f = Function::new_elementary(|x| (1.0 / x).sin());
-    f.zero_tolerance_factor = 10.0f64.powi(7);
+    let f = Function::new_elementary(|x| x.ln());
     cplane.fns.push(f);
-
+    
     let mut actual_path = std::env::temp_dir();
     actual_path.push("yapl-actual.svg");
 
@@ -33,11 +28,10 @@ fn test_1oversinx() -> std::io::Result<()> {
     let mut expectation_path = std::path::PathBuf::new();
     expectation_path.push(env!("CARGO_MANIFEST_DIR"));
     expectation_path.push("tests");
-    expectation_path.push("1oversinx.svg");
+    expectation_path.push("lnx.svg");
     
     let expectation = std::io::read_to_string(std::fs::File::open(expectation_path)?)?;
     let actual = std::io::read_to_string(std::fs::File::open(&actual_path)?)?;
     assert!(expectation == actual);
-    
     return Ok(())   
 }
