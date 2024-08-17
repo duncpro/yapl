@@ -49,8 +49,6 @@ fn main() -> std::io::Result<()> {
 - Draw labeled points of interest.
 - Draw labeled line segments.
 - Draw basic shapes.
-- Compile to WASM and expose an API to Javascript.
-- Create interactive demonstration by implementing desmos-like webapp.
 
 ## Philosophy
 ### Styling
