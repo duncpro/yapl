@@ -1,4 +1,4 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion, black_box};
 
 use yapl::elements::{CoordinatePlane, Function};
 use yapl::math::{NonDecreasing, ClosedInterval};
@@ -17,10 +17,8 @@ pub fn plot_1oversinx(c: &mut Criterion) {
         f.zero_tolerance_factor = 10.0f64.powi(7);
         cplane.fns.push(f);
 
-        let mut out = yapl::misc::Dispose;
-        
         let stylesheet = Stylesheet::new_default();
-        codegen(&mut out, &cplane, stylesheet, &mut NullTeXRenderer)
+        black_box(codegen(&mut yapl::misc::Dispose, &cplane, stylesheet, &mut NullTeXRenderer))
     }));
 }
 
