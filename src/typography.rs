@@ -129,16 +129,16 @@ pub struct NullTeXRenderer;
 impl TeXRenderer for NullTeXRenderer {
     fn render_str(
         &mut self, 
-        tex_str: &str, 
-        html_destin: &mut impl std::io::Write,
-        preserve_aspect_ratio: Option<&'static str>
+        _tex_str: &str, 
+        _html_destin: &mut impl std::io::Write,
+        _preserve_aspect_ratio: Option<&'static str>
     )
     -> std::io::Result<()> 
     {
         Ok(())
     }
 
-    fn dump_css(&mut self, css_destin: &mut impl std::io::Write) -> std::io::Result<()> 
+    fn dump_css(&mut self, _css_destin: &mut impl std::io::Write) -> std::io::Result<()> 
     {
         Ok(())
     }
