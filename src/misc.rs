@@ -1,5 +1,7 @@
 use std::cell::{Ref, RefMut, RefCell};
 
+// # Collection Utilities
+
 pub trait Push<T> {
     fn push(&mut self, value: T);
 }
@@ -98,6 +100,8 @@ impl<'a, T> Push<T> for SegVec<'a, T> {
     }
 }
 
+// # Control Flow Utilities
+
 #[macro_export]
 macro_rules! assert_matches {
     ($e:expr, $p:pat) => {
@@ -106,9 +110,19 @@ macro_rules! assert_matches {
     }
 }
 
+// # IO utilities
+
 pub fn read_u32_le(stream: &mut impl std::io::Read) -> std::io::Result<u32> {
     let mut buf: [u8; 4] = [0; 4];
     stream.read_exact(&mut buf)?;
     let value = u32::from_le_bytes(buf);
     return Ok(value);
+}
+
+pub struct Dispose;
+
+impl std::io::Write for Dispose {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> { Ok(buf.len()) }
+
+    fn flush(&mut self) -> std::io::Result<()> { Ok(()) }
 }

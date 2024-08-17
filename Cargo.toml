@@ -16,6 +16,9 @@ include = [
   "readme-assets/**/*.png"
 ]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bench]]
+name = "1oversinx"
+harness = false
 
 [dependencies]
+criterion = "0.5.1"
