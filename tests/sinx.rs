@@ -5,7 +5,8 @@ use yapl::typography::MathJaxProcessTeXRenderer;
 use yapl::codegen::codegen;
 use yapl::style::Stylesheet;
 
-fn main() -> std::io::Result<()> {
+#[test]
+fn test_sinx() -> std::io::Result<()> {
     let mut cplane = CoordinatePlane::new_elementary();
     let mut x_axis = Axis::new_default(0.0, PI, 0.0);
     x_axis.tick_label = Some(TickLabel::new_default(TickLabelKind::Symbolic(SymbolicTickLabel {
@@ -19,14 +20,29 @@ fn main() -> std::io::Result<()> {
     let f = Function::new_default(|x| x.sin());
     cplane.fns.push(f);
 
-    let mut out_path = std::path::PathBuf::new();
-    out_path.push(env!("CARGO_MANIFEST_DIR"));
-    out_path.push("examples");
-    out_path.push("sinx.svg");
-    let mut out = std::fs::OpenOptions::new().write(true).create(true).truncate(true).open(out_path)?;
-        
-    let stylesheet = Stylesheet::new_default();
-    let mut tex_renderer = MathJaxProcessTeXRenderer::new()?;
-    codegen(&mut out, &cplane, stylesheet, &mut tex_renderer)?;
+    let mut actual_path = std::env::temp_dir();
+    actual_path.push("yapl-actual.svg");
+
+    {
+        let mut out = std::fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .open(&actual_path)?;
+
+        let mut tex_renderer = MathJaxProcessTeXRenderer::new()?;
+        let stylesheet = Stylesheet::new_default();
+        codegen(&mut out, &cplane, stylesheet, &mut tex_renderer)?;
+    }
+
+    let mut expectation_path = std::path::PathBuf::new();
+    expectation_path.push(env!("CARGO_MANIFEST_DIR"));
+    expectation_path.push("tests");
+    expectation_path.push("sinx.svg");
+    
+    let expectation = std::io::read_to_string(std::fs::File::open(expectation_path)?)?;
+    let actual = std::io::read_to_string(std::fs::File::open(&actual_path)?)?;
+    assert!(expectation == actual);
+    
     return Ok(())   
 }
