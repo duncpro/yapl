@@ -1,13 +1,7 @@
 # yapl
-Experimental SVG plotting library with focus on mathematical exposition.
+Experimental SVG plotting library for the purpose of mathematical exposition.
 
 ![sin(1/x)](readme-assets/sin1overx.png)
-
-The end-goal of this library is to be a less-featureful replacement for 
-[JSXGraph](https://jsxgraph.uni-bayreuth.de/wp/index.html).
-
-However, that goal is a long way from being realized. At the moment this library
-provides little more than a linear interpolation algorithm.
 
 ## Features
 

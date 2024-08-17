@@ -83,7 +83,6 @@ pub struct PlotFnParams {
     pub zero_tolerance: f64
 }
 
-
 #[derive(Clone, Copy, PartialEq)]
 pub struct Anchor { pub input: f64 }
 

@@ -7,7 +7,7 @@ use yapl::typography::NullTeXRenderer;
 use yapl::codegen::codegen;
 
 pub fn plot_1oversinx(c: &mut Criterion) {
-    c.bench_function("fib 20", |b| b.iter(|| {
+    c.bench_function("plot_1oversinx", |b| b.iter(|| {
         let mut cplane = CoordinatePlane::new_minimal();
         cplane.extent.brect.x = ClosedInterval::new(NonDecreasing::new(-0.5, 0.5));
         cplane.extent.brect.y = ClosedInterval::new(NonDecreasing::new(-1.1, 1.1));
