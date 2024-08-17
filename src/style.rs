@@ -14,23 +14,28 @@ use crate::elements::axis::TickDefaultStyleClass;
 ///
 /// # Example: Disable Rule
 /// ```rust
+/// use yapl::style::DefaultGlobalStyleClasses;
 /// let mut def_global_styles = DefaultGlobalStyleClasses::ENABLED;
 /// def_global_styles.function.apply_stroke_width = false;
 /// ```
 ///
 /// # Example: Disable Class
 /// ```rust
+/// use yapl::style::DefaultGlobalStyleClasses;
+/// use yapl::elements::function::FunctionDefaultStyleClass;
 /// let mut def_global_styles = DefaultGlobalStyleClasses::ENABLED;
 /// def_global_styles.function = FunctionDefaultStyleClass::DISABLED;
 /// ```
 ///
 /// # Example: Disable Stylesheet
 /// ```rust
+/// use yapl::style::DefaultGlobalStyleClasses;
 /// let def_global_styles = DefaultGlobalStyleClasses::DISABLED;
 /// ```
 ///
 /// # Example: Disable Class for Single Element
 /// ```rust
+/// use yapl::elements::Function;
 /// let mut function = Function::new_default(|x| x);
 /// function.apply_default_style_class = false;
 /// ```

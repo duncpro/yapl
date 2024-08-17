@@ -54,29 +54,29 @@ impl<'a> Function<'a> {
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct FunctionDefaultStyleClass {
-    pub apply_default_stroke_width: bool,
-    pub apply_default_linecap: bool,
-    pub apply_default_linejoin: bool,
-    pub apply_default_fill: bool,
-    pub apply_default_stroke: bool
+    pub apply_stroke_width: bool,
+    pub apply_linecap: bool,
+    pub apply_linejoin: bool,
+    pub apply_fill: bool,
+    pub apply_stroke: bool
 }
 
 impl FunctionDefaultStyleClass {
 
     pub const ENABLED: Self = Self {
-        apply_default_stroke_width: true,
-        apply_default_linecap:      true,
-        apply_default_linejoin:     true,
-        apply_default_fill:         true,
-        apply_default_stroke:       true,
+        apply_stroke_width: true,
+        apply_linecap:      true,
+        apply_linejoin:     true,
+        apply_fill:         true,
+        apply_stroke:       true,
     };
     
     pub const DISABLED: Self = Self {
-        apply_default_stroke_width: false,
-        apply_default_linecap:      false,
-        apply_default_linejoin:     false,
-        apply_default_fill:         false,
-        apply_default_stroke:       false,
+        apply_stroke_width: false,
+        apply_linecap:      false,
+        apply_linejoin:     false,
+        apply_fill:         false,
+        apply_stroke:       false,
     };
 
     pub const NAME: &'static str = "yapl-def-fn";
@@ -94,19 +94,19 @@ pub(crate) fn write_function_default_style_class(out: &mut impl std::io::Write,
 {
     if class == &FunctionDefaultStyleClass::DISABLED { return Ok(()) }
     write!(out, ".{} {{", FunctionDefaultStyleClass::NAME)?;
-    if class.apply_default_stroke_width {
+    if class.apply_stroke_width {
         write!(out, "stroke-width: {};", DEFAULT_FUNCTION_STROKE_WIDTH)?;
     }
-    if class.apply_default_linecap {
+    if class.apply_linecap {
         write!(out, "stroke-linecap: {};", DEFAULT_FUNCTION_LINECAP)?;
     }
-    if class.apply_default_linejoin {
+    if class.apply_linejoin {
         write!(out, "stroke-linejoin: {};", DEFAULT_FUNCTION_LINEJOIN)?;
     }
-    if class.apply_default_fill {
+    if class.apply_fill {
         write!(out, "fill: {};", DEFAULT_FUNCTION_FILL)?;
     }
-    if class.apply_default_stroke {
+    if class.apply_stroke {
         write!(out, "stroke: {};", DEFAULT_FUNCTION_STROKE)?;
     }
     write!(out, "}}")?;

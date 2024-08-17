@@ -11,6 +11,8 @@ include = [
   "mathjax-wrapper/package.json",
   "mathjax-wrapper/package-lock.json",
   "mathjax-wrapper/tsconfig.json",
+  "tests/**/*.rs",
+  "tests/**/*.svg",
   "examples/**/*.rs",
   "readme-assets/**/*.svg",  
   "readme-assets/**/*.png"
