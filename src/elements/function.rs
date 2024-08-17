@@ -31,8 +31,8 @@ pub struct Function<'a> {
 
 impl<'a> Function<'a> {
     pub const DEFAULT_MIN_DEPTH: usize = 4;
-    pub const DEFAULT_ERROR_TOLERANCE_FACTOR: f64 = 100000.0 /* 10f64.powi(5) */;
-    pub const DEFAULT_ZERO_TOLERANCE_FACTOR: f64 = 100000.0 /* 10f64.powi(5) */;
+    pub const DEFAULT_ERROR_TOLERANCE_FACTOR: f64 = 2000.0 /* 10f64.powi(5) */;
+    pub const DEFAULT_ZERO_TOLERANCE_FACTOR: f64 = 10000000.0 /* 10f64.powi(5) */;
     pub const DEFAULT_KIND: FunctionKind = FunctionKind::OfX;
 
     /// Constructs a new [`Function`] with parameters suitable for displaying any elementary function.

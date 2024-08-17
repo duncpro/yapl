@@ -33,7 +33,7 @@ fn test_1oversinx() -> std::io::Result<()> {
     let mut expectation_path = std::path::PathBuf::new();
     expectation_path.push(env!("CARGO_MANIFEST_DIR"));
     expectation_path.push("tests");
-    expectation_path.push("1oversinx.svg");
+    expectation_path.push("sin1overx.svg");
     
     let expectation = std::io::read_to_string(std::fs::File::open(expectation_path)?)?;
     let actual = std::io::read_to_string(std::fs::File::open(&actual_path)?)?;
