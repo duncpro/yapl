@@ -3,7 +3,7 @@ use criterion::{criterion_group, criterion_main, Criterion};
 use yapl::elements::{CoordinatePlane, Function};
 use yapl::math::{NonDecreasing, ClosedInterval};
 use yapl::style::Stylesheet;
-use yapl::typography::MathJaxProcessTeXRenderer;
+use yapl::typography::NullTeXRenderer;
 use yapl::codegen::codegen;
 
 pub fn plot_1oversinx(c: &mut Criterion) {
@@ -19,9 +19,8 @@ pub fn plot_1oversinx(c: &mut Criterion) {
 
         let mut out = yapl::misc::Dispose;
         
-        let mut tex_renderer = MathJaxProcessTeXRenderer::new()?;
         let stylesheet = Stylesheet::new_default();
-        codegen(&mut out, &cplane, stylesheet, &mut tex_renderer)
+        codegen(&mut out, &cplane, stylesheet, &mut NullTeXRenderer)
     }));
 }
 

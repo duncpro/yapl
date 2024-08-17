@@ -23,21 +23,15 @@ pub trait TeXRenderer {
     fn dump_css(&mut self, css_destin: &mut impl std::io::Write) -> std::io::Result<()>;
 }
 
-// TODO: MathJaxProcessTexRenderer should keep the node process alive for the lifetime
-//       of the struct to avoid paying the cost of node VM startup every time some text
-//       is to be rendered.
-
-// TODO: MathJaxProcessTexRenderer should implement render_num so as not to allocate
-//       every time a number is typeset, like the default implementation does.
-
 use std::io::{Read, Write};
 use crate::assert_matches;
 use crate::misc::read_u32_le;
 
+// # `MathJaxProcessTeXRenderer`
+
 pub struct MathJaxProcessTeXRenderer {
     child_process: std::process::Child
 }
-
 
 impl MathJaxProcessTeXRenderer {
     pub fn new() -> std::io::Result<Self> {
@@ -127,5 +121,25 @@ impl Drop for MathJaxProcessTeXRenderer {
         child_stdin.flush().unwrap();
         let status = self.child_process.wait().unwrap();
         assert!(status.success());
+    }
+}
+
+pub struct NullTeXRenderer;
+
+impl TeXRenderer for NullTeXRenderer {
+    fn render_str(
+        &mut self, 
+        tex_str: &str, 
+        html_destin: &mut impl std::io::Write,
+        preserve_aspect_ratio: Option<&'static str>
+    )
+    -> std::io::Result<()> 
+    {
+        Ok(())
+    }
+
+    fn dump_css(&mut self, css_destin: &mut impl std::io::Write) -> std::io::Result<()> 
+    {
+        Ok(())
     }
 }
