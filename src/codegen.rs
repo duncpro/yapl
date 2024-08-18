@@ -129,9 +129,11 @@ where T: TeXRenderer,
     
         let error_tolerance = codomain.len() / function.error_tolerance_factor;
         let zero_tolerance = domain.len() / function.zero_tolerance_factor;
+        let undef_tolerance = domain.len() / function.undef_tolerance_factor;
                 
-        plotfn::plotfn(&function.eval, &mut buf, PlotFnParams { domain, codomain, 
-            min_depth: function.min_depth, error_tolerance, zero_tolerance }); 
+        let stats = plotfn::plotfn(&function.eval, &mut buf, PlotFnParams { domain, codomain, 
+            min_depth: function.min_depth, error_tolerance, zero_tolerance, undef_tolerance }); 
+        // println!("{:#?}", stats);
            
         write!(self.out, "<path")?;
         write!(self.out, " class=\"")?;

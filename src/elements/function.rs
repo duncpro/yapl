@@ -16,6 +16,10 @@ pub struct Function<'a> {
     /// Specifically `zero_tolerance = domain_length / zero_tolerance_factor`.
     pub zero_tolerance_factor: f64,
 
+    /// See `undef_tolerance` in [`crate::plotfn::PlotFnParams`]
+    /// Specifically `undef_tolerance = domain_length / undef_tolerance_factor`.
+    pub undef_tolerance_factor: f64,
+
     pub kind: FunctionKind,
 
     pub apply_default_style_class: bool,
@@ -31,8 +35,9 @@ pub struct Function<'a> {
 
 impl<'a> Function<'a> {
     pub const DEFAULT_MIN_DEPTH: usize = 4;
-    pub const DEFAULT_ERROR_TOLERANCE_FACTOR: f64 = 2000.0 /* 10f64.powi(5) */;
+    pub const DEFAULT_ERROR_TOLERANCE_FACTOR: f64 = 2000.0;
     pub const DEFAULT_ZERO_TOLERANCE_FACTOR: f64 = 10000000.0 /* 10f64.powi(5) */;
+    pub const DEFAULT_UNDEF_TOLERANCE_FACTOR: f64 = 2000.0;
     pub const DEFAULT_KIND: FunctionKind = FunctionKind::OfX;
 
     /// Constructs a new [`Function`] with parameters suitable for displaying any elementary function.
@@ -52,6 +57,7 @@ impl<'a> Function<'a> {
             min_depth: Self::DEFAULT_MIN_DEPTH,
             error_tolerance_factor: Self::DEFAULT_ERROR_TOLERANCE_FACTOR,
             zero_tolerance_factor: Self::DEFAULT_ZERO_TOLERANCE_FACTOR,
+            undef_tolerance_factor: Self::DEFAULT_UNDEF_TOLERANCE_FACTOR,
             kind: Self::DEFAULT_KIND,
             apply_default_style_class: true,
             style_class: None,

@@ -60,9 +60,6 @@ pub struct PlotFnParams {
     /// should be set to 2k / h.
     pub error_tolerance: f64,
 
-    /// The minimum distance along the x-axis that is visible given the scale of the graph
-    /// and the resolution of the display.
-    ///
     /// Once the domain of a bisection has length less than `zero_tolerance` it is pruned
     /// from the graph entirely. There will be no stroke over this interval.
     ///
@@ -80,7 +77,12 @@ pub struct PlotFnParams {
     /// should be below 2k / h.
     ///
     /// Exactly how small this value is will depend on the function being plotted. 
-    pub zero_tolerance: f64
+    pub zero_tolerance: f64,
+
+    /// Once a bisection of the domain has length less than `undef_tolerance` **and** is undefined
+    /// at its endpoints, it is assumed that the function is undefined for all points within
+    /// the interval, and the interpolant is pruned.
+    pub undef_tolerance: f64
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -95,6 +97,7 @@ pub struct Stats {
     pub prune_outside_viewport_finite: usize,
     pub prune_outside_viewport_infinite: usize,
     pub prune_zero_tolerance: usize,
+    pub prune_undef_tolerance: usize,
     pub breaks: usize,
     pub duration: std::time::Duration
 }
@@ -108,6 +111,7 @@ pub fn plotfn(f: &Box<dyn Fn(f64) -> f64>, nodes: &mut SegVec<Node>, params: Plo
 {
     assert!(params.error_tolerance >= 0.0);
     assert!(params.zero_tolerance >= 0.0);
+    assert!(params.undef_tolerance >= 0.0);
     return bisect(f, params, nodes);
 }
 
@@ -173,13 +177,20 @@ fn bisect(f: &Box<dyn Fn(f64) -> f64>, params: PlotFnParams, nodes: &mut SegVec<
                     stats.prune_outside_viewport_infinite += 1;
                     continue;
                 }
-            }
-        }
+            }       
+
+            if left_y.is_nan() && right_y.is_nan() {
+                if state.domain.len() < params.undef_tolerance {
+                    stats.prune_undef_tolerance += 1;
+                    continue;
+                }
+            }     
  
-        if state.domain.len() < params.zero_tolerance { 
-            stats.prune_zero_tolerance += 1;
-            continue 
-        };
+            if state.domain.len() < params.zero_tolerance { 
+                stats.prune_zero_tolerance += 1;
+                continue 
+            };
+        }
 
         stack.push(State { 
             domain: ClosedInterval::new(NonDecreasing::new(splitpoint, state.domain.end())), 
