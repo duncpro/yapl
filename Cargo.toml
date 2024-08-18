@@ -22,5 +22,9 @@ include = [
 name = "1oversinx"
 harness = false
 
+[[bench]]
+name = "lnx"
+harness = false
+
 [dependencies]
 criterion = "0.5.1"
